@@ -7,6 +7,8 @@ services:
       MYSQL_ROOT_PASSWORD: root
     ports:
       - 3307:3306  #cambia la porta esterna a 3307(3306 è gia in uso dal TCP!)
+    volumes:
+      - mysql_data:/var/lib/mysql  #salva dati su disco, e non in ram
     networks:
       - mynetwork
 
@@ -20,3 +22,5 @@ services:
 
 networks:
   mynetwork:
+volumes:
+  mysql_data:  # Definizione del volume
