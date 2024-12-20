@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;  //import specific response fo errors (i.e.404)
 use Illuminate\Support\Facades\Route;  //import routes methods ect
 
@@ -77,21 +78,30 @@ Route::get('/tasks',function() use($tasks){
           //view:'index' , view= folder resources/views/  +  index = index.blade.php(.blade.php laravel knows is default)
         'name' => 'Nelvison',
         'tasks' => $tasks
+        //'tasks'=>\App\Models\Task::latest()->where('completed',true)->get()  //order from latest timestamp (in column 'created_at') + filter Where x column 'completed'
     ]);
 })->name('tasks.index');  //custom name of the route
 
-Route::get('/tasks/{id}',function($id) use($tasks){
-    $task = collect($tasks)->firstWhere('id',$id);
-       //collect() convert in laravel collection and
-       //return the first task where id property == $id parameter
-    if(!$task){
-        abort(Response::HTTP_NOT_FOUND);  //interrupt del app and return a 404
-    }
-    return view('show',['task'=>$task]);
-})->name('tasks.show');  //custom name
+//PRENDE I DATI DALL'ARRAY TASKS QUA SOPRA
+// Route::get('/tasks/{id}',function($id) use($tasks){
+//     $task = collect($tasks)->firstWhere('id',$id);
+//        //collect() convert in laravel collection and
+//        //return the first task where id property == $id parameter
+//     if(!$task){
+//         abort(Response::HTTP_NOT_FOUND);  //interrupt del app and return a 404
+//     }
+//     return view('show',['task'=>$task]);
+// })->name('tasks.show');  //custom name
+Route::view('/tasks/create','create')->name('tasks.create');
 
+//PRENDE I DATI DAL DB
+Route::get('/tasks/{id}', function($id){
+    return view('show',[
+        'task'=>\App\Models\Task::findOrFail($id)  //find don't return page 404 but lines of code,better findOrFail
+    ]);
+})->name('tasks.show');
 
-
-
-
+Route::post('/tasks',function(Request $request){
+    dd($request->all());
+})->name('tasks.store');
 
