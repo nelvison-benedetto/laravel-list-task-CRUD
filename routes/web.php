@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;  //import specific response fo errors (i.e.404)
 use Illuminate\Support\Facades\Route;  //import routes methods ect
 use App\Models\Task;  // \App\Models\Task
+use App\Http\Requests\TaskRequest;   //set of rules x request a task, created with php artisan make:request TaskRequest
 
 // Route::get('/', function () {  //main page
 //     return view('index', [  //laravel knows view ='resources/views' and .blade.php is default, so take the file index
@@ -101,9 +102,10 @@ Route::get('/tasks',function(){
 // })->name('tasks.show');  //custom name
 Route::view('/tasks/create','create')->name('tasks.create');
 
-Route::get('/tasks/{id}/edit',function($id){
+Route::get('/tasks/{task}/edit',function(Task $task){  //ROUTE MODEL BINDING, better than '/{id}/'
     return view('edit',[
-        'task'=>Task::findOrFail($id)
+        //'task'=>Task::findOrFail($id)
+        'task'=>$task  //if not find the task id return 'model not found' which means 404
     ]);
 })->name('tasks.edit');  //file edit.blade.php
 
@@ -115,23 +117,29 @@ Route::get('/tasks/{id}', function($id){
     ]);
 })->name('tasks.show');
 
-Route::post('/tasks',function(Request $request){
+Route::post('/tasks',function(TaskRequest $request){  //!use template TaskRequest.php instead of 'Request' and no need findOrFail() anymore
     //dd($request->all()); //dd stamp the result (and stop the esecution, dump() non lo fa)
-    $data = $request->validate([  //validation before post on db is a MUST!!
-        'title' => 'required|max:255',
-        'description' => 'required',
-        'long_description' => 'required'
-    ]);
-    $task = new Task;
-    $task->title=$data['title'];
-    $task->description=$data['description'];
-    $task->long_description=$data['long_description'];
-    $task->save(); //post new task on db in tab tasks
+    // $data = $request->validate([  //validation before post on db is a MUST!!
+    //     'title' => 'required|max:255',
+    //     'description' => 'required',
+    //     'long_description' => 'required'
+    // ]);
+
+    //$data = $request->validated();
+    // $task = new Task;
+    // $task->title=$data['title'];
+    // $task->description=$data['description'];
+    // $task->long_description=$data['long_description'];
+    // $task->save(); //post new task on db in tab tasks
+    $task = Task::create($request->validated());  //MASS ASSIGNMENT you set/change multiple attributes of a model at once
+        //validated() laravel apply the validation rules(in the TaskRequest.php), if pass ok return only those data
+        //create() take the validated data and creates a new task in the db
+     //with PUT would be  $task->update($request->validated())
     return redirect()->route('tasks.show',['id'=>$task->id])
         ->with('success','Task created successfully!');  //append a custom message x user, here only appears when a new tak is created
 })->name('tasks.store');
 
-Route::put('/tasks/{id}', function($id, Request $request){
+Route::put('/tasks/{id}', function($id, Request $request){   //here i'm not using TaskRequest.php x $data
     $data = $request->validate([
         'title' => 'required|max:255',
         'description' => 'required',
