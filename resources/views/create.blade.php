@@ -7,6 +7,8 @@
     </style>
 @endsection
 @section('content')
+    {{--IF YOU WANT USE REUSABLING FORM (form.blade.php) INSTEAD OF THIS CONTENT--}}
+        {{--include('form')--}}
     {{-- {{$errors}}  see the errors in web page --}}
     <form method='POST' action='{{route('tasks.store')}}'>
         @csrf

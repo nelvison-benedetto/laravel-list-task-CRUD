@@ -86,7 +86,7 @@ Route::fallback(function(){return 'my error 404';});
 
 Route::get('/tasks',function(){
     return view('index',[
-        'tasks'=>Task::latest()->get()
+        'tasks'=>Task::latest()->paginate(9)  //->get() for stardart fetch, pagination() use pages (here 9 elements x page)
     ]);
 })->name('tasks.index');
 
@@ -153,3 +153,16 @@ Route::put('/tasks/{id}', function($id, Request $request){   //here i'm not usin
     return redirect()->route('tasks.show',['id'=>$task->id])
         ->with('success','Task updated successfully!');
 })->name('tasks.update'); //test with url http://127.0.0.1:8000/tasks/{id}/edit
+
+Route::delete('/tasks/{task}', function(Task $task){
+    $task->delete();
+    return redirect()->route('tasks.index')
+        ->with('success','Task deleted successfully!');
+})->name('tasks.destroy');
+
+Route::put('tasks/{task}/toggle-complete',function(Task $task){  //TOGGLE TASK STATE
+    // $task->completed = !$task->completed;
+    // $task->save();
+    $task->toggleComplete();
+    return redirect()->back()->with('success','Task updated successfully!');
+})->name('task.toggle-complete');

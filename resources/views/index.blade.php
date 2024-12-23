@@ -15,7 +15,9 @@
         @else
             <div>There are no tasks!</div>
         @endif --}}
-
+    <div>
+        <a href="{{route('tasks.create')}}">ADD A TASK!</a>
+    </div>
 
     @forelse ($tasks as $task)
          {{--crea un link per ogni title di ogni task--}}
@@ -25,6 +27,11 @@
     @empty  {{--playied only if $tasks is empty--}}
         <div>There are no task!</div>
     @endforelse
+    @if($tasks->count())  {{--PAGINATION, used with pagination() in route insetad of get()--}}
+        <nav>
+            {{$tasks->links()}}
+        </nav>
+    @endif
 @endsection
 
 
