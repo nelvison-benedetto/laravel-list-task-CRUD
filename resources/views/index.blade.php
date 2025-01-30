@@ -16,19 +16,21 @@
             <div>There are no tasks!</div>
         @endif --}}
     <div>
-        <a href="{{route('tasks.create')}}">ADD A TASK!</a>
+        <a href="{{route('tasks.create')}}" class='mylink'>ADD A TASK!</a>
     </div>
 
     @forelse ($tasks as $task)
          {{--crea un link per ogni title di ogni task--}}
-        <a href="{{ route('tasks.show',['id'=>$task->id]) }}"> {{$task->title}} </a><br>
+        <a href="{{ route('tasks.show',['id'=>$task->id]) }}" @class(['font-bold','line-through'=>$task->completed])>  {{--assign the class only if the task is completed--}}
+            @class(['font-bold','line-through'=>$task->completed]){{$task->title}}
+        </a><br>
           {{--route() redirect + [] are given parameters --}}
           {{--['id'=>$task->id] la var id della singola route diventa uguale all'id proprietà della singola task--}}
     @empty  {{--playied only if $tasks is empty--}}
         <div>There are no task!</div>
     @endforelse
     @if($tasks->count())  {{--PAGINATION, used with pagination() in route insetad of get()--}}
-        <nav>
+        <nav class='mt-4'>
             {{$tasks->links()}}
         </nav>
     @endif

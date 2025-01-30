@@ -14,7 +14,7 @@
         @csrf
         @method('PUT') {{--enables http method SPOOFING, you can use restful http verbs like PUT in html form that natively support only GET and POST. --}}
         <div>
-            <label for="title"> Title</label>
+            <label for="title"> TitleXX</label>
             <input type="text" name='title' id='title' value='{{$task->title}}'> {{--name x server, id x DOM document object model--}}
             @error('title')
                 <p class='error-message'>{{$message}}<p/>

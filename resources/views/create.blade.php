@@ -13,28 +13,35 @@
     <form method='POST' action='{{route('tasks.store')}}'>
         @csrf
         <div>
-            <label for="title"> Title</label>
-            <input type="text" name='title' id='title' value='{{old('title')}}'> {{--name x server, id x DOM document object model--}}
+            <label for="title">XXTitle</label>
+            <input type="text" name='title' id='title' value='{{old('title')}}' {{--name x server, id x DOM document object model--}}
+            @class(['border-red-500'=>$errors->has('title')])
+            class='border @error('title') border-red-500 @enderror'>
             @error('title')
                 <p class='error-message'>{{$message}}<p/>
             @enderror
         </div>
         <div>
             <label for='description'>Description</label>
-            <textarea name="description" id="description" rows="3">{{old('description')}}</textarea>  {{--old() ,works with only POST & don't use with passwords!!, retains the value in the form if corrected after the submit with some errors--}}
+            <textarea name="description" id="description" rows="3" @class(['border-red-500'=>$errors->has('description')])>
+                {{old('description')}}  {{--old() ,works with only POST & don't use with passwords!!, retains the value in the form if corrected after the submit with some errors--}}
+            </textarea>
             @error('description')
                 <p class='error-message'>{{$message}}<p/>
             @enderror
         </div>
         <div>
             <label for='long_description'>Long Description</label>
-            <textarea name="long_description" id="long_description" rows="8">{{old('long_description')}}</textarea>
+            <textarea name="long_description" id="long_description" rows="8" @class(['border-red-500'=>$errors->has('long_description')])>
+                {{old('long_description')}}
+            </textarea>
             @error('long_description')
                 <p class='error-message'>{{$message}}<p/>
             @enderror
         </div>
-        <div>
-            <button type='submit'>Add Task</button>
+        <div class='flex items-center gap-2'>
+            <button type='submit' class='mybtn'>Add Task</button>
+            <a href="{{route('tasks.index')}}" class='mylink'>Cancel</a>
         </div>
     </form>
 @endsection
